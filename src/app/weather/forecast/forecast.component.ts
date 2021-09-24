@@ -9,8 +9,8 @@ import { WeatherService } from '../weather.service';
 })
 export class ForecastComponent implements OnInit {
   constructor(private weatherService: WeatherService) {
-    this.weatherService.getCurrentLocation().subscribe((coords) => {
-      console.log(coords);
+    this.weatherService.getForecast().subscribe((weatherResponse) => {
+      console.log(weatherResponse);
     });
   }
 
