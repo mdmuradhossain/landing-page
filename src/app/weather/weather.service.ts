@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import {
+  filter,
+  map,
+  mergeMap,
+  pluck,
+  switchMap,
+  toArray,
+} from 'rxjs/operators';
+import { WeatherResponse } from './weather.response';
 @Injectable({
   providedIn: 'root',
 })
@@ -19,8 +27,18 @@ export class WeatherService {
           .set('appid', 'ba8fd1ff5c4fc5fa1a33e58f9cd6e721');
       }),
       switchMap((params) => {
-        return this.http.get(this.apiUrl, { params: params });
-      })
+        return this.http.get<WeatherResponse>(this.apiUrl, { params: params });
+      }),
+      pluck('list'),
+      mergeMap((value) => of(...value)),
+      filter((value, index) => index % 8 === 0),
+      map((value) => {
+        return {
+          dateString: value.dt_tx,
+          temp: value.main.temp,
+        };
+      }),
+      toArray()
     );
   }
 
