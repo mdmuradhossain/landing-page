@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { WeatherService } from '../weather.service';
 
 @Component({
@@ -8,11 +8,13 @@ import { WeatherService } from '../weather.service';
   styleUrls: ['./forecast.component.css'],
 })
 export class ForecastComponent implements OnInit {
+  // forecast$:Observable<{dateString:string,temp:number}>
   forecastData = [];
   constructor(private weatherService: WeatherService) {
     this.weatherService.getForecast().subscribe((weatherResponse) => {
       console.log(weatherResponse);
       this.forecastData = weatherResponse;
+      // this.forecast$ = weatherResponse;
     });
   }
 
