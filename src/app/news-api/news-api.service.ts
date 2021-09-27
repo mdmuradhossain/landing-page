@@ -1,8 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, pluck, switchMap, tap } from 'rxjs/operators';
+import { NewsApiResponse } from './news-api-response';
 
+interface Article {
+  title: string;
+  url: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -12,11 +17,13 @@ export class NewsApiService {
   private apiKey = '7443707e1fe847d59782363093292211';
   private country = 'us';
 
-  pagesInput: Subject<number>;
-  pagesOutput: Observable<any>;
-  numberOfPages: Observable<number>;
+  private pagesInput: Subject<number>;
+  pagesOutput: Observable<Article[]>;
+  numberOfPages: Subject<number>;
 
   constructor(private http: HttpClient) {
+    this.numberOfPages = new Subject();
+
     this.pagesInput = new Subject();
     this.pagesOutput = this.pagesInput.pipe(
       map((page) => {
@@ -27,8 +34,13 @@ export class NewsApiService {
           .set('page', String(page));
       }),
       switchMap((params) => {
-        return this.http.get<NewsResponse>(this.url, { params: params });
-      })
+        return this.http.get<NewsApiResponse>(this.url, { params: params });
+      }),
+      tap((response) => {
+        const totalPages = Math.ceil(response.totalResults / this.pageSize);
+        this.numberOfPages.next(totalPages);
+      }),
+      pluck('articles')
     );
   }
 }

@@ -4,5 +4,6 @@ export interface NewsApiResponse {
     title: string;
     description: string;
     url: string;
+    urlToImage: string;
   }[];
 }
