@@ -4,9 +4,11 @@ import { Observable, Subject } from 'rxjs';
 import { map, pluck, switchMap, tap } from 'rxjs/operators';
 import { NewsApiResponse } from './news-api-response';
 
-interface Article {
+export interface Article {
   title: string;
+  description: string;
   url: string;
+  urlToImage: string;
 }
 @Injectable({
   providedIn: 'root',
@@ -25,7 +27,11 @@ export class NewsApiService {
     this.numberOfPages = new Subject();
 
     this.pagesInput = new Subject();
-    this.pagesOutput = this.pagesInput.pipe(
+    this.pagesOutput = this.getNews();
+  }
+
+  getNews() {
+    return this.pagesInput.pipe(
       map((page) => {
         return new HttpParams()
           .set('apiKey', this.apiKey)
@@ -42,5 +48,9 @@ export class NewsApiService {
       }),
       pluck('articles')
     );
+  }
+
+  getPage(page: number) {
+    this.pagesInput.next(page);
   }
 }

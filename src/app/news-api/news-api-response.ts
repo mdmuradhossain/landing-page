@@ -1,9 +1,6 @@
+import { Article } from './news-api.service';
+
 export interface NewsApiResponse {
   totalResults: number;
-  articles: {
-    title: string;
-    description: string;
-    url: string;
-    urlToImage: string;
-  }[];
+  articles: Article[];
 }

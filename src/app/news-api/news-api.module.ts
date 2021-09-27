@@ -5,6 +5,6 @@ import { NewsArticleListComponent } from './news-article-list/news-article-list.
 @NgModule({
   declarations: [NewsArticleListComponent],
   imports: [CommonModule],
-  exports: [],
+  exports: [NewsArticleListComponent],
 })
 export class NewsApiModule {}
