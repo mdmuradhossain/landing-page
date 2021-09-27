@@ -2,21 +2,28 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import {
+  catchError,
   filter,
   map,
   mergeMap,
   pluck,
+  retry,
   share,
   switchMap,
+  tap,
   toArray,
 } from 'rxjs/operators';
 import { WeatherResponse } from './weather.response';
+import { NotificationsService } from '../notifications/notifications.service';
 @Injectable({
   providedIn: 'root',
 })
 export class WeatherService {
   private apiUrl = 'https://api.openweathermap.org/data/2.5/forecast';
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private notificationsService: NotificationsService
+  ) {}
 
   getForecast() {
     return this.getCurrentLocation().pipe(
@@ -52,9 +59,21 @@ export class WeatherService {
           observer.complete();
         },
         (err) => {
-          observer.error(err);
+          observer.error('Failed to get location');
         }
       );
-    });
+    }).pipe(
+      retry(2),
+      tap(
+        () => {
+          this.notificationsService.addSuccess('Location fetched');
+        },
+        () => {}
+      ),
+      catchError((err) => {
+        this.notificationsService.addError('Failed to get location');
+        return throwError(err);
+      })
+    );
   }
 }
