@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { scan } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 interface Command {
   id: number;
@@ -10,13 +11,23 @@ interface Command {
   providedIn: 'root',
 })
 export class NotificationsService {
-  messages: Subject<Command>;
+  messagesInput: Subject<Command>;
+  messagesOutput: Observable<Command[]>;
   constructor() {
-    this.messages = new Subject<Command>();
+    this.messagesInput = new Subject<Command>();
+    this.messagesOutput = this.messagesInput.pipe(
+      scan((acc: Command[], value: Command) => {
+        if (value.type === 'clear') {
+          return acc.filter((message) => message.id !== value.id);
+        } else {
+          return [...acc, value];
+        }
+      }, [])
+    );
   }
 
   addSuccess(message: string) {
-    this.messages.next({
+    this.messagesInput.next({
       id: uuidv4.v4(),
       type: 'success',
       text: message,
@@ -24,7 +35,7 @@ export class NotificationsService {
   }
 
   addError(message: string) {
-    this.messages.next({
+    this.messagesInput.next({
       id: uuidv4.v4(),
       type: 'error',
       text: message,
@@ -32,7 +43,7 @@ export class NotificationsService {
   }
 
   clearMessage(id: number) {
-    this.messages.next({
+    this.messagesInput.next({
       id: uuidv4.v4(),
       type: 'clear',
     });
