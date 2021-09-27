@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NewsArticleListComponent } from './news-article-list/news-article-list.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [NewsArticleListComponent],
   imports: [CommonModule],
   exports: [],
 })
