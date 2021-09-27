@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NewsApiModule } from './news-api/news-api.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { WeatherModule } from './weather/weather.module';
 
@@ -15,6 +16,7 @@ import { WeatherModule } from './weather/weather.module';
     WeatherModule,
     HttpClientModule,
     NotificationsModule,
+    NewsApiModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
