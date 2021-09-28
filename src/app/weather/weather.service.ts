@@ -66,12 +66,12 @@ export class WeatherService {
       retry(2),
       tap(
         () => {
-          this.notificationsService.addSuccess('Location fetched');
+          this.notificationsService.addSuccess('Weather data fetched');
         },
         () => {}
       ),
       catchError((err) => {
-        this.notificationsService.addError('Failed to get location');
+        this.notificationsService.addError('Failed to fetch weather data');
         return throwError(err);
       })
     );
