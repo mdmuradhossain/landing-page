@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NewsApiModule } from './news-api/news-api.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { SharedModule } from './shared/shared.module';
 import { WeatherModule } from './weather/weather.module';
 
 @NgModule({
@@ -17,6 +18,7 @@ import { WeatherModule } from './weather/weather.module';
     HttpClientModule,
     NotificationsModule,
     NewsApiModule,
+    SharedModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
